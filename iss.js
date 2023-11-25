@@ -9,6 +9,7 @@ const request = require('request');
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
 const fetchMyIP = function(callback) {
+  // console.log("fetching IP");
   const url = "https://api.ipify.org?format=json";
   request(url, (error, response, body) => {
     if (error) {
@@ -28,6 +29,7 @@ const fetchMyIP = function(callback) {
 
 
 const fetchCoordsByIP = (ip, callback) => {
+  // console.log("fetching coord");
   const url = `http://ipwho.is/${ip}`;
   request(url, (error, response, body) => {
     if (error) {
@@ -58,6 +60,7 @@ const fetchCoordsByIP = (ip, callback) => {
  *     [ { risetime: 134564234, duration: 600 }, ... ]
  */
 const fetchISSFlyOverTimes = function(coords, callback) {
+  // console.log("fetching times");
   const url = `https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`;
   request(url, (error, response, body) => {
     if (error) {
@@ -66,7 +69,7 @@ const fetchISSFlyOverTimes = function(coords, callback) {
     }
     // if non-200 status, assume server error
     if (response.statusCode !== 200) {
-      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      const msg = `Status Code ${response.statusCode} when fetching pass times. Response: ${body}`;
       callback(Error(msg), null);
       return;
     }
@@ -79,12 +82,12 @@ const fetchISSFlyOverTimes = function(coords, callback) {
 /**
  * Orchestrates multiple API requests in order to determine the next 5 upcoming ISS fly overs for the user's current location.
  * Input:
- *   - A callback with an error or results. 
+ *   - A callback with an error or results.
  * Returns (via Callback):
  *   - An error, if any (nullable)
  *   - The fly-over times as an array (null if error):
  *     [ { risetime: <number>, duration: <number> }, ... ]
- */ 
+ */
 const nextISSTimesForMyLocation = function(callback) {
   fetchMyIP((error, ip) => {
     if (error) {
@@ -102,7 +105,6 @@ const nextISSTimesForMyLocation = function(callback) {
       });
     });
   });
-}
+};
 
-
-module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes, nextISSTimesForMyLocation };
+module.exports = { nextISSTimesForMyLocation };
