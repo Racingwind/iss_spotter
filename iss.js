@@ -14,10 +14,14 @@ const fetchMyIP = function(callback) {
 
 const url = "https://api.ipify.org?format=json";
 request(url, (error, response, body) => {
-  console.log(error);
-  console.log(body);
-  // callback(error, desc);
-
+  if (body !== "[]") {
+    const data = JSON.parse(body);
+    console.log(data.ip);
+  } else {
+    error = "Breed not found.";
+  }
+  
+// callback(error, desc);
 });
 
 
